@@ -98,6 +98,7 @@ class Item < ActiveRecord::Base
 end
 ```
 
+<br>
 #### Cate model
 
 create  `app/models/cate.rb`
@@ -107,6 +108,7 @@ class Cate < ActiveRecord::Base
 end
 ```
 
+<br>
 #### Order model
 
 create `app/models/order.rb`
@@ -116,6 +118,7 @@ class Order < ActiveRecord::Base
 end
 ```
 
+<br>
 #### OrderItem model
 
 create `app/models/order_item.rb`
@@ -127,6 +130,7 @@ class OrderItem < ActiveRecord::Base
 end
 ```
 
+<br>
 #### 進入console測試剛剛建好的model
 
 ```
@@ -141,4 +145,4 @@ rails c
 :007 > exit
 ```
 
-一開始要先`count`，再下Model Name，這樣就能知道這個table是存在的
+一開始要先`count`，再下Model Name，這樣就能知道這個table是否存在
