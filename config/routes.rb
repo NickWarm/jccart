@@ -23,6 +23,7 @@ Rails.application.routes.draw do
       resources :cates  # 要賣的東西的分類
       resources :orders # 訂單
       resources :users
+      resources :manager
     end
   end
 
