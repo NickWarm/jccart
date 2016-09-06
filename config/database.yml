@@ -14,7 +14,7 @@ default: &default
   encoding: utf8
   pool: 5
   username: root
-  password:
+  password: iamgroot
   host: localhost
 
 development:
@@ -51,4 +51,4 @@ production:
   <<: *default
   database: JCcart_production
   username: JCcart
-  password: <%= ENV['JCCART_DATABASE_PASSWORD'] %>
+  password: iamgroot
