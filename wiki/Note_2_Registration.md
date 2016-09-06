@@ -1,5 +1,5 @@
 ## Step.3 註冊系統
-
+<br><br>
 使用`devise`這個gem，[devise GitHub](https://github.com/plataformatec/devise)
 
 先在我們的專案裝好devise
@@ -14,6 +14,7 @@ rails g devise Manager
 ```
 
 接著去修改`XXXXXXX_devise_create_users.rb`，JC解釋了這些功能，然後把`Recoverable`、`Rememberable`、`Trackable`、`Confirmable`、`Lockable`，以及下面這行都註解掉沒使用它們
+
 `db/migrate/20160906083955_devise_create_users.rb`
 ```
   # add_index :users, :reset_password_token, unique: true
@@ -22,8 +23,8 @@ rails g devise Manager
 接著去修改`XXXXXXX_devise_create_manager.rb`，一樣關掉上面那些東西。
 
 然後`rake db:migrate`
-
-#### 建立shop的table
+<br><br>
+### 建立shop的table
 
 ```
 rails g migration init_shop
@@ -70,7 +71,9 @@ end
 
 然後`rake db:migrate`
 
-#### 產品圖片
+<br>
+### 產品圖片：paperclip
+
 
 使用[paperclip github](https://github.com/thoughtbot/paperclip)
 
