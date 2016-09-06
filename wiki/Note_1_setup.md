@@ -107,25 +107,34 @@ end
 我們會分三層
 
 **第一層：public**
+
+>public是給所有使用者
+
 ```
 resources :statics, :only => [:index]
 root "statics#index"
 ```
 
-**第二層：購物車**
+**第一層：購物車**
 ```
 resources :items, :only => [:index, :show]
 ```
 
-**第三層：dashboard**
+**第二層：dashboard**
+
+>dashboard是給一般使用者
+
+**第三層：admin**
+
+>admin是給管理者
 
 一個系統在打時，建議從後面打到前面，所以我們先從管理介面`:admin`開始打
 
 ```
-namespace :dashboard do
+namespace :dashboard do  #第二層
   resources :orders
 
-  namespace :admin do  
+  namespace :admin do    #第三層
     resources :items  # 要賣的東西
     resources :cates  # 要賣的東西的分類
     resources :orders # 訂單
