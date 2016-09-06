@@ -1,56 +1,29 @@
 Rails.application.routes.draw do
-  # The priority is based upon order of creation: first created -> highest priority.
-  # See how all your routes lay out with "rake routes".
+  # 分三層
+  # 第一層：public
+  resources :statics, :only => [:index]
+  root "statics#index"
 
-  # You can have the root of your site routed with "root"
-  # root 'welcome#index'
+  # 第二層：購物車
+  resources :items, :only => [:index, :show]
 
-  # Example of regular route:
-  #   get 'products/:id' => 'catalog#view'
-
-  # Example of named route that can be invoked with purchase_url(id: product.id)
-  #   get 'products/:id/purchase' => 'catalog#purchase', as: :purchase
-
-  # Example resource route (maps HTTP verbs to controller actions automatically):
-  #   resources :products
-
-  # Example resource route with options:
-  #   resources :products do
-  #     member do
-  #       get 'short'
-  #       post 'toggle'
-  #     end
+  # 上面的網址：
+  # /statics/action/
   #
-  #     collection do
-  #       get 'sold'
-  #     end
-  #   end
+  # namespace裡面的網址：
+  # dashboard/items/action
 
-  # Example resource route with sub-resources:
-  #   resources :products do
-  #     resources :comments, :sales
-  #     resource :seller
-  #   end
+  # 第三層：dashboard
+  namespace :dashboard do
+    resources :orders
 
-  # Example resource route with more complex sub-resources:
-  #   resources :products do
-  #     resources :comments
-  #     resources :sales do
-  #       get 'recent', on: :collection
-  #     end
-  #   end
+    namespace :admin do  #現在是教學示例，建議:admin寫成亂碼，像是:sakwejh，這樣才不會被猜到
+      # 一個系統在打時，建議從後面打到前面，例如先從管理介面開始打
+      resources :items  # 要賣的東西
+      resources :cates  # 要賣的東西的分類
+      resources :orders # 訂單
+      resources :users
+    end
+  end
 
-  # Example resource route with concerns:
-  #   concern :toggleable do
-  #     post 'toggle'
-  #   end
-  #   resources :posts, concerns: :toggleable
-  #   resources :photos, concerns: :toggleable
-
-  # Example resource route within a namespace:
-  #   namespace :admin do
-  #     # Directs /admin/products/* to Admin::ProductsController
-  #     # (app/controllers/admin/products_controller.rb)
-  #     resources :products
-  #   end
 end

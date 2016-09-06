@@ -15,7 +15,7 @@ rails new JCcart -d mysql -T
 
 #### 修改database的帳號密碼
 
-我先前設定的MySQL密碼：iamgroot
+我先前設定的MySQL密碼：**iamgroot**，要用時請改成你自己的MySQL密碼
 
 ##### JC在影片教學中的寫法，會噴掉 (原因不明)
 `config/database.yml`
@@ -73,3 +73,80 @@ gem 'paperclip'
 ```
 
 然後`bundle install`，`rake db:create`，最後`rails s`測試`localhost:3000`看是否能work
+
+## Step.2 路由設定
+
+完整的code
+
+`config/routes.rb`
+```
+Rails.application.routes.draw do
+
+  resources :statics, :only => [:index]
+  root "statics#index"
+
+  resources :items, :only => [:index, :show]
+
+  namespace :dashboard do
+    resources :orders
+    namespace :admin do  
+      resources :items  
+      resources :cates  
+      resources :orders
+      resources :users
+    end
+  end
+
+end
+
+```
+我們會分三層
+
+**第一層：public**
+```
+resources :statics, :only => [:index]
+root "statics#index"
+```
+
+**第二層：購物車**
+```
+resources :items, :only => [:index, :show]
+```
+
+**第三層：dashboard**
+
+一個系統在打時，建議從後面打到前面，所以我們先從管理介面`:admin`開始打
+
+```
+namespace :dashboard do
+  resources :orders
+
+  namespace :admin do  
+    resources :items  # 要賣的東西
+    resources :cates  # 要賣的東西的分類
+    resources :orders # 訂單
+    resources :users
+  end
+end
+```
+
+namespace 裡面與外面的code，他的差異在於**路由**
+
+namespace裡面的網址：`dashboard/items/action`
+
+namespace外面的網址：`/statics/action/`
+
+由於我們現在是教學示例，所以admin還是寫`:admin`，但你實際在做商品時，不該這樣寫，會讓你的後台容易被猜到，應該改用亂碼寫，像是`:sakwejh`，所以做商品時，後台路由其實該長這樣
+```
+namespace :dashboard do
+  resources :orders
+
+  namespace :sakwejh do  
+
+    resources :items  # 要賣的東西
+    resources :cates  # 要賣的東西的分類
+    resources :orders # 訂單
+    resources :users
+  end
+end
+```
