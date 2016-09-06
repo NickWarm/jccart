@@ -18,6 +18,9 @@ rails new JCcart -d mysql -T
 我先前設定的MySQL密碼：**iamgroot**，要用時請改成你自己的MySQL密碼
 
 ##### JC在影片教學中的寫法，會噴掉 (原因不明)
+
+PS：JC後來也發現會噴掉，不過JC是把defalut的username改成`root`，然後Gemfile把MySQL改成`gem 'mysql2', '0.3.20'`
+
 `config/database.yml`
 ```
 default: &default

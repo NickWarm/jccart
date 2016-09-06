@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  devise_for :managers
+  devise_for :users
   # 分三層
   # 第一層：public
   resources :statics, :only => [:index]
