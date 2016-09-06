@@ -136,8 +136,40 @@ end
 ```
 
 <br><br>
-#### 建立管理者
+#### 建立管理人
 
+進入console建立真正的管理人
 ```
 rails c
+
+:001 > Manager
+:002 > Manager.create(:email => 'wer@wer.wer', :password => 'werwerwer')
+:003 > exit
+
 ```
+<br>
+登入畫面devise其實已經幫我們弄好了，我們可以`rake routes`來看所有的路由，JC讓我們先來看看`users/sign_up`
+
+`rails s`啟動server後，網址打`localhost:3000/users/sign_up`，會發現噴掉說找不到`turbolinks`，這是因為我們一開始就把`turbolinks`給關掉了
+
+於是我們去`app/views/layouts/application.html.erb`，改成
+```
+<!DOCTYPE html>
+<html>
+<head>
+  <title>JCcart</title>
+  <%= stylesheet_link_tag    'application', media: 'all' %>
+  <%= javascript_include_tag 'application' %>
+  <%= csrf_meta_tags %>
+</head>
+<body>
+
+<%= yield %>
+
+</body>
+</html>
+```
+
+接著去`app/assets/javascripts/application.js`，砍掉`//= require turbolinks`這一行
+
+上一次重啟server是很久以前的事了，為了避免噴掉，去iTerm開啟Server的那個Tab，`Ctrl + c`關掉server後，再`rails s`開啟server，然後去`localhost:3000/users/sign_up`就能看到devise內建的註冊頁面了
