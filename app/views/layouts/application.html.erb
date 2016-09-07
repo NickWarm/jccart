@@ -8,7 +8,20 @@
 </head>
 <body>
 
+<% if current_user %>
+  Hi! <%= current_user.emamil %>, <%= link_to "登出", destroy_user_session_path, method: "delete" %>
+<% else %>
+  <%= link_to "登入", new_user_session_path %>, <%= link_to "註冊", new_user_registration_path %>
+<% end %>
+
+<%= will_paginate @paginate if @paginate %>
+
+<hr>
+
 <%= yield %>
 
+<hr>
+
+<%= will_paginate @paginate if @paginate %>
 </body>
 </html>

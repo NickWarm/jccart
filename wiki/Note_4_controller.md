@@ -1,4 +1,5 @@
 ## Step.5 後台的controller
+<br>
 
 建立`dashboard`、`admin`這兩個資料夾
 
@@ -6,7 +7,8 @@ create `app/controllers/dashboard/admin`
 
 現在我們要一邊看`routes.rb`一邊來建我們的controllers
 
-#### dashboard_controller
+<br>
+### dashboard_controller
 
 create `app/controllers/dashboard/dashboard_controller.rb`
 
@@ -45,7 +47,7 @@ before_action :authenticate_user!
 接下來所有繼承`Dashboard::DashboardController`就不用寫這行，這是他的好處
 
 <br>
-#### orders_controller
+### orders_controller
 
 create `app/controllers/dashboard/orders_controller.rb`
 
@@ -57,7 +59,7 @@ end
 ```
 
 <br>
-#### admin_controller
+### admin_controller
 
 create `app/controllers/dashboard/admin/admin_controller.rb`
 
@@ -74,7 +76,7 @@ before_action :authenticate_manager!
 ```
 
 <br>
-#### items_controller
+### items_controller
 
 create `app/controllers/dashboard/admin/items_controller.rb`
 ```
@@ -136,6 +138,9 @@ end
 ```
 
 <br><br>
+
+## Step.6 登入頁面
+
 #### 建立管理人
 
 進入console建立真正的管理人
