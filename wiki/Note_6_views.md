@@ -17,3 +17,7 @@ Rails.application.routes.draw do
 ```
 
 然後修改資料夾名稱，把`app/views/statics`改成`app/views/items`
+
+##
+
+建立資料夾`app/views/dashboard/admin`
