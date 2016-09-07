@@ -41,3 +41,18 @@ Overwrite /Users/nicholas/Desktop/pracCart/JCcart/app/models/item.rb? (enter "h"
 ```
 rails g scaffold cates
 ```
+
+然後JC把`views/items`下的檔案全複製到`views/dashboard/admin`，透過在iTerm下指令
+```
+praccart/jccart/app/views
+
+$ cp -R items dashboard/admin
+```
+
+砍掉`views/items`下的`edit.html.erb`、`_form.html.erb`
+```
+praccart/jccart/app/views/items
+
+rm edit.html.erb
+rm _form.html.erb
+```
