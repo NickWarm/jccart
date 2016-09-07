@@ -1,5 +1,7 @@
 <h1>New Item</h1>
 
-<%= render 'form' %>
-
-<%= link_to 'Back', items_path %>
+<%= form_for @item, dashboard_admin_items_path, method: :post  do |f| %>
+  名稱： <%= f.text_field :name %><br>
+  價格： <%= f.number_field :price %>
+  <button type="submit" >送出</button>
+<% end %>
