@@ -55,4 +55,6 @@ praccart/jccart/app/views/items
 
 rm edit.html.erb
 rm _form.html.erb
+rm new.html.erb
 ```
+砍掉`views/items`下的`edit.html.erb`、`_form.html.erb`
