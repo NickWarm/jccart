@@ -206,3 +206,8 @@ destroy_manager_session DELETE /managers/sign_out(.:format)                 devi
 ```
 
 `else`內就是沒有登入的狀態，他的路由與上面是相同的概念，就不贅述了
+
+<br>
+### 開始來打首頁的內容
+
+create `app/views/statics/index.html.erb`
