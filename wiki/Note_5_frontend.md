@@ -150,7 +150,7 @@ fix `views/layouts/application.html.erb`
 <body>
 
 <% if current_user %>
-  Hi! <%= current_user.emamil %>, <%= link_to "登出", destroy_user_session_path, method: "delete" %>
+  Hi! <%= current_user.email %>, <%= link_to "登出", destroy_user_session_path, method: "delete" %>
 <% else %>
   <%= link_to "登入", new_user_session_path %>, <%= link_to "註冊", new_user_registration_path %>
 <% end %>
@@ -177,7 +177,7 @@ fix `views/layouts/application.html.erb`
 當我們在`current_user`時，我們可以看到current_user的email
 ```
 <% if current_user %>
-  Hi! <%= current_user.emamil %>  
+  Hi! <%= current_user.email %>  
 <% else %>
 
 <% end %>
@@ -199,7 +199,7 @@ destroy_manager_session DELETE /managers/sign_out(.:format)                 devi
 所以code寫成
 ```
 <% if current_user %>
-  Hi! <%= current_user.emamil %>, <%= link_to "登出", destroy_user_session_path, method: "delete" %>
+  Hi! <%= current_user.email %>, <%= link_to "登出", destroy_user_session_path, method: "delete" %>
 <% else %>
 
 <% end %>
@@ -210,4 +210,11 @@ destroy_manager_session DELETE /managers/sign_out(.:format)                 devi
 <br>
 ### 開始來打首頁的內容
 
-create `app/views/statics/index.html.erb`
+create `app/views/statics/index.html.erb`，很簡單打個
+```
+<h1>我是首頁</h1>
+```
+然後重整`localhost:3000`測試登入登出畫面。
+
+
+# 由於JC準備把static砍掉，所以我們準備開新的branch
