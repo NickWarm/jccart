@@ -26,5 +26,18 @@ Rails.application.routes.draw do
 ```
 rails g --help
 rails g scaffold --help
+```
+
+開始scaffold
+```
 rails g scaffold items
+```
+第一個conflict，按N，其他都按enter蓋過去
+```
+Overwrite /Users/nicholas/Desktop/pracCart/JCcart/app/models/item.rb? (enter "h" for help) [Ynaqdh] n
+```
+
+遇到衝突也按enter蓋過去
+```
+rails g scaffold cates
 ```

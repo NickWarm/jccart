@@ -1,0 +1,25 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Listing Cates</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @cates.each do |cate| %>
+      <tr>
+        <td><%= link_to 'Show', cate %></td>
+        <td><%= link_to 'Edit', edit_cate_path(cate) %></td>
+        <td><%= link_to 'Destroy', cate, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Cate', new_cate_path %>
