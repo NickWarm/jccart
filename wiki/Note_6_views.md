@@ -49,7 +49,7 @@ praccart/jccart/app/views
 $ cp -R items dashboard/admin
 ```
 
-砍掉`views/items`下的`edit.html.erb`、`_form.html.erb`
+砍掉`views/items`下的`edit.html.erb`、`_form.html.erb`、`new.html.erb`
 ```
 praccart/jccart/app/views/items
 
@@ -57,4 +57,12 @@ rm edit.html.erb
 rm _form.html.erb
 rm new.html.erb
 ```
-砍掉`views/items`下的`edit.html.erb`、`_form.html.erb`
+
+砍掉`views/cates`下的`edit.html.erb`、`_form.html.erb`
+```
+praccart/jccart/app/views/cates
+
+rm edit.html.erb
+rm _form.html.erb
+rm new.html.erb
+```
