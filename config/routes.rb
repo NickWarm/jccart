@@ -3,8 +3,8 @@ Rails.application.routes.draw do
   devise_for :users
   # 分三層
   # 第一層：public
-  resources :statics, :only => [:index]
-  root "statics#index"
+
+  root "items#index"
 
   # 第一層：購物車
   resources :items, :only => [:index, :show]
