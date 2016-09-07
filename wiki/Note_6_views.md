@@ -18,6 +18,13 @@ Rails.application.routes.draw do
 
 然後修改資料夾名稱，把`app/views/statics`改成`app/views/items`
 
-##
+## 用scaffold，然後改它
 
-建立資料夾`app/views/dashboard/admin`
+建立資料夾`app/views/dashboard/admin/items`
+
+然後
+```
+rails g --help
+rails g scaffold --help
+rails g scaffold items
+```

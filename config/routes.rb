@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :items
   devise_for :managers
   devise_for :users
   # 分三層
