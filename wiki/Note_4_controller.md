@@ -173,3 +173,37 @@ rails c
 接著去`app/assets/javascripts/application.js`，砍掉`//= require turbolinks`這一行
 
 上一次重啟server是很久以前的事了，為了避免噴掉，去iTerm開啟Server的那個Tab，`Ctrl + c`關掉server後，再`rails s`開啟server，然後去`localhost:3000/users/sign_up`就能看到devise內建的註冊頁面了
+
+
+####  如何修改devise的登入頁面
+
+剛剛我們連到`localhost:3000/users/sign_up`所看到的頁面是devise的default view，我們可以generate他的view來改成自己想要的
+
+先問rails有什麼可以生成
+```
+rails g --help
+```
+
+然後因為我們有上devise，所以會看到`devise:views`
+```
+...
+
+Devise:
+  devise
+  devise:controllers
+  devise:install
+  devise:views
+
+...
+```
+
+所以我們就能下指令生成`devise:views`
+```
+rails g devise:views
+```
+
+我們的`localhost:3000/users/sign_up`是在`app/views/devise/registrations/new.html.erb`
+
+fix `app/views/devise/registrations/new.html.erb`，把標題的`<h2>Sign up</h2>`改成`<h2>Sign up Yooo</h2>`
+
+再重整一次`localhost:3000/users/sign_up`就能看到我們成功改掉標題
