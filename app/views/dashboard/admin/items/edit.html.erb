@@ -2,6 +2,7 @@
 
 <%= form_for @item, :url => dashboard_admin_item_path, method: :patch  do |f| %>
   名稱： <%= f.text_field :name %><br>
-  價格： <%= f.number_field :price %>
+  價格： <%= f.number_field :price %><br>
+  圖片： <%= f.file_field :cover %><br>
   <button type="submit" >送出</button>
 <% end %>

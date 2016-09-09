@@ -502,3 +502,70 @@ end
 ```
 
 眼角餘光掃到`destroy action`也沒有，一樣加上`@item = Item.find(params[:id])`
+
+<br>
+## Step.10 加上圖片
+
+### fix admin/items/edit.html.erb
+
+fix `app/views/dashboard/admin/items/edit.html.erb`
+```
+<h1>Editing Item</h1>
+
+<%= form_for @item, :url => dashboard_admin_item_path, method: :patch  do |f| %>
+  名稱： <%= f.text_field :name %><br>
+  價格： <%= f.number_field :price %><br>
+  圖片： <%= f.file_field :cover %><br>
+  <button type="submit" >送出</button>
+<% end %>
+```
+
+### fix admin/items/index.html.erb
+
+為了讓圖片顯示出來，列表下也有必要有圖片
+
+fix `app/views/dashboard/admin/items/index.html.erb`
+```
+<h1>產品列表</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>id</th>
+      <th>圖片</th>
+      ...
+      ...
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @items.each do |item| %>
+      <tr>
+        <td><%= item.id %></td>
+        <td><%= image_tag item.cover.url(:icon) %></td>
+        ...
+        ...
+        ...
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+```
+
+### 設定missing.png
+
+然後重整`localhost:3000/dashboard/admin/items`，我們可以看到index view裡所有圖片都是missing，我們用chrome工具檢查元素，可以看到預設是使用`/images/icon/missing.png`
+```
+<img src="/images/icon/missing.png" alt="Missing">
+```
+
+所以我們去辜狗找一張圖片來放吧，我使用的是[icon-question](http://missingmiddlehousing.com/wp-content/uploads/2015/04/icon-question.png)這張圖片
+
+先創建資料夾，create `jccart/public/images/icon`
+
+然後把剛剛抓的圖片放到這資料夾下，並且改名為`missing.png`
+```
+jccart/public/images/icon
+
+mv icon-question.png missing.png
+```
