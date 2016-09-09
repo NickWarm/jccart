@@ -488,3 +488,17 @@ fix `app/views/dashboard/admin/items/edit.html.erb`
 ```
 
 接著再重整頁面，然後按`編輯`，終於能work了
+
+### fix dashboard/admin/items_controller
+
+接著，我們隨便找一個來編輯，改掉價格後送出，又噴`undefined method "update" for nil:NilClass`，是因為我們在controller的`upeate action`沒有宣告`@item`
+
+fix `app/controllers/dashboard/admin/items_controller.rb`
+```
+def update
+  @item = Item.find(params[:id])
+  ...
+end
+```
+
+眼角餘光掃到`destroy action`也沒有，一樣加上`@item = Item.find(params[:id])`
