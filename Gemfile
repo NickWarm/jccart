@@ -38,6 +38,7 @@ gem 'awesome_print'
 gem 'rails-pry'      #擴充時code會比較漂亮，取代irb
 gem 'devise'
 gem 'paperclip'      #檔案上傳
+gem 'faker'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

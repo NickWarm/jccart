@@ -371,3 +371,38 @@ end
 ```
 
 當我們在` Dashboard::Admin::AdminController`寫上`layout 'admin'`後，所有繼承他的controller，自動變成後台的頁面。
+
+## Step.9 寫一支機器人塞亂數產品進去
+
+裝新的gem `faker`
+
+add `gem "faker"` to `Gemfile`，然後`bundle install`再重開`rails s`。
+
+接著我們去[faker GitHub](https://github.com/stympy/faker)，這是一個塞假資料的gem，JC後來是使用`Faker::Address.state`
+
+先進入console
+```
+rails c
+
+:001 > Faker
+:002 > Item.count
+:003 > Item
+:004 > 100.times do |i|
+:005 >     Item.create(:name => Faker::Address.state, :price => rand(1..3000))
+:006?>   end;
+:007 >   true
+```
+
+然後發現噴了，查看錯誤訊息，是因為少了default的`cate_id`
+```
+ActiveRecord::StatementInvalid: Mysql2::Error: Field 'cate_id' doesn't have a default value: INSERT INTO `items` (`name`, `price`, `created_at`, `updated_at`) VALUES ('Virginia', 2474, '2016-09-09 08:45:00', '2016-09-09 08:45:00')
+```
+
+所以我們再繼續
+```
+:008 >   100.times do |i|
+:009 >     Item.create(:name => Faker::Address.state, :price => rand(1..3000), :cate => cate)
+:010?>   end; true
+```
+
+就能成功生假資料，接著再去重整`localhost:3000/dashboard/admin/items`就能看到100筆資料，然後我們隨便拿一筆資料按`編輯`，然後發現他又噴了
