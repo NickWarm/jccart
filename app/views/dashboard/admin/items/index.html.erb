@@ -19,8 +19,8 @@
         <td><%= item.name %></td>
         <td><%= item.price %></td>
         <td>
-          <%= link_to '編輯', edit_item_path(item) %>
-          <%= link_to '刪除', item, method: :delete, data: { confirm: '你確定嗎?' } %>
+          <%= link_to '編輯', edit_dashboard_admin_item_path(item) %>
+          <%= link_to '刪除', dashboard_admin_item_path(item), method: :delete, data: { confirm: '你確定嗎?' } %>
         </td>
       </tr>
     <% end %>

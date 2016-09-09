@@ -405,4 +405,86 @@ ActiveRecord::StatementInvalid: Mysql2::Error: Field 'cate_id' doesn't have a de
 :010?>   end; true
 ```
 
-就能成功生假資料，接著再去重整`localhost:3000/dashboard/admin/items`就能看到100筆資料，然後我們隨便拿一筆資料按`編輯`，然後發現他又噴了
+就能成功生假資料，接著再去重整`localhost:3000/dashboard/admin/items`就能看到100筆資料，然後我們隨便拿一筆資料按`編輯`，然後發現他又噴`Template is missing`
+
+### fix admin/items_controller
+
+fix `app/controllers/dashboard/admin/items_controller.rb`
+```
+class Dashboard::Admin::ItemsController < Dashboard::Admin::AdminController
+  def index
+    @items = @paginate = Item.order('id DESC').paginate(:page => params[:page])
+  end
+
+  def new
+    @item = Item.new
+  end
+
+  def edit
+    @item = Item.find(params[:id])
+  end
+
+  def create
+    @item = Item.new(item_params)
+    @item.save
+    redirect_to action: :index #這是舊版寫法
+    #新版寫法  redirect_to dashboard_admin_items_path
+  end
+
+  def update
+    @item.update(item_params)
+    redirect_to action: :index
+  end
+
+  def destroy
+    @item.destroy
+    redirect_to action: :index
+  end
+end
+
+private
+
+def item_params
+  params.require(:item).permit!
+end
+
+```
+
+通常後台會倒序排序，所以會寫`Item.order('id DESC').paginate(:page => params[:page])`
+
+接著再按`編輯`，發現又噴了，查看錯誤訊息，是先前`index.html.erb`的route寫錯
+
+### fix admin/items/index.html.erb
+
+fix `app/views/dashboard/admin/items/index.html.erb`
+
+原本是
+```
+<%= link_to '編輯', edit_item_path(item) %>
+```
+
+查看route，應該是要走到`dashboard/admin/items#edit`，查看Prifx應該是`edit_dashboard_admin_item`，所以我們改成
+```
+<%= link_to '編輯', edit_dashboard_admin_item_path(item) %>
+```
+
+delete原本的路由也是錯的，改成
+```
+<%= link_to '刪除', dashboard_admin_item_path(item), method: :delete, data: { confirm: '你確定嗎?' } %>
+```
+
+### fix admin/items/edit.html.erb
+
+重整頁面再按一次`編輯`，然後又噴了，錯誤訊息是寫`form_for`有問題，所以辜狗去查[rails api form_for](http://api.rubyonrails.org/classes/ActionView/Helpers/FormHelper.html#method-i-form_for)
+
+這邊都會把form_for怎麼用講得很清楚，我們去看form_for傳的url參數，發現是傳`:url`，所以我們回去改
+
+fix `app/views/dashboard/admin/items/edit.html.erb`
+```
+<%= form_for @item, :url => dashboard_admin_item_path, method: :patch  do |f| %>
+  ...
+  ...
+<% end %>
+```
+
+接著再重整頁面，然後按`編輯`，終於能work了

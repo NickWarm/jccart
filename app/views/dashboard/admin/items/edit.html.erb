@@ -1,6 +1,6 @@
 <h1>Editing Item</h1>
 
-<%= form_for @item, dashboard_admin_item_path, method: :patch  do |f| %>
+<%= form_for @item, :url => dashboard_admin_item_path, method: :patch  do |f| %>
   名稱： <%= f.text_field :name %><br>
   價格： <%= f.number_field :price %>
   <button type="submit" >送出</button>
