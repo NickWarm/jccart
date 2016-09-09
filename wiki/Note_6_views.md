@@ -552,7 +552,7 @@ fix `app/views/dashboard/admin/items/index.html.erb`
 </table>
 ```
 
-### 設定missing.png
+### 設定missing.jpg
 
 然後重整`localhost:3000/dashboard/admin/items`，我們可以看到index view裡所有圖片都是missing，我們用chrome工具檢查元素，可以看到預設是使用`/images/icon/missing.png`
 ```
@@ -567,5 +567,38 @@ fix `app/views/dashboard/admin/items/index.html.erb`
 ```
 jccart/public/images/icon
 
-mv icon-question.png missing.png
+mv icon-question.png missing.jpg
 ```
+
+### fix iterm model 來改變圖片設定
+
+現在我們把icon設定成`jpg`檔，可是我們剛剛用chrome工具查到的是使用`png`檔，我們可以去iterm model改他
+
+fix `app/models/iterm.rb`
+```
+class Item < ActiveRecord::Base
+  belongs_to :cate
+
+  has_attached_file :cover,
+      styles: {
+        original: "1024x1024>",
+        cover: "300x300>",
+        icon: "150x150#"
+      },  #style很重要，取決於你要幾張圖片
+      default_url: "/images/missing.jpg"
+  validates_attachment_content_type :cover, content_type: /\Aimage\/.*\z/
+end
+```
+
+原本的`default_url`如下
+```
+default_url: "/images/:style/missing.jpg"
+```
+這樣的寫法是從`style`裡取`icon`
+
+現在我們把它拿掉變成
+```
+default_url: "/images/missing.jpg"
+```
+
+所以我們也要把`missing.jpg`他的路徑從`public/images/icon/missing.jpg`改成`public/images/missing.jpg`，然後再重整`localhost:3000/dashboard/admin/items`，我們的圖片就能work了
