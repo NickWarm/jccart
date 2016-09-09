@@ -357,3 +357,17 @@ end
 ```
 
 然後重整頁面，就能順利進入`localhost:3000/dashboard/admin/items`
+
+### fix admin_controller.rb
+
+成功後會發現`h1`tag寫得是`對外頁面：public`，是因為我們少一個語句在controller內
+
+fix `app/controllers/dashboard/admin/admin_controller.rb`
+```
+class Dashboard::Admin::AdminController < ApplicationController
+  before_action :authenticate_manager!
+  layout 'admin'
+end
+```
+
+當我們在` Dashboard::Admin::AdminController`寫上`layout 'admin'`後，所有繼承他的controller，自動變成後台的頁面。
