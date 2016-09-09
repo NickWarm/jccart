@@ -319,6 +319,10 @@ Hi! <%= current_manager.email %>, <%= link_to "登出", destroy_manager_session_
 
 再來是`link_to "商品管理"`。我們要先看到`全部商品`，然後才能做編輯。為了要先看到全部商品，所以我們要去找i`items#index`，所以我們要去路由找`dashboard/admin/items#index`，他的Prefix是`dashboard_admin_items`，這邊一樣是由scaffold生成的，所以不用給HTML Verb  
 
+### 測試剛剛打的頁面是否都能work
+
+##### `localhost:3000`
+
 去`localhost:3000`測試，需要先`rake db:migrate`，然後發現噴了。這是由於scaffold又幫我們建了`20160907072602_create_items.rb`與`20160907073156_create_cates.rb`，但是我們先前已經見過這兩個table了，所以我們下指令刪除它
 ```
 jccart db/migrate
@@ -326,3 +330,30 @@ jccart db/migrate
 rm 20160907072602_create_items.rb
 rm 20160907073156_create_cates.rb
 ```
+
+然後我們再重整`localhost:3000`的頁面，就能順利work了。
+
+##### `localhost:3000/dashboard/admin/items`
+
+測試時`localhost:3000/dashboard/admin/items`，會發現我們被轉到`localhost:3000/managers/sign_in`，要我們登入manager
+
+我們剛剛manager的帳號密碼
+
+>帳號：wer@wer.wer
+>密碼：werwerwer
+
+進去後會發現，我們controller沒有打
+
+### fix admin/items_controller
+
+fix `app/controllers/dashboard/admin/items_controller.rb`
+
+```
+class Dashboard::Admin::ItemsController < Dashboard::Admin::AdminController
+  def index
+    @items = @paginate = Item.paginate(:page => params[:page])
+  end
+end
+```
+
+然後重整頁面，就能順利進入`localhost:3000/dashboard/admin/items`
