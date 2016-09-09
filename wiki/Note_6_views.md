@@ -203,7 +203,126 @@ fix `app/views/dashboard/admin/items/index.html.erb`
 
 <br>
 
-<%= link_to 'New Item', new_dashboard_admin_item_path, method: :get %>
+<%= link_to 'New Item', new_dashboard_admin_item_path %>
 ```
 
-最後面的`<%= link_to 'New Item', new_item_path %>`他的路由也是錯的，由於我們要建立一個新的item，所以我們`rake routes`去找`dashboard/admin/items#new`相對應的Prefix，也就是`new_dashboard_admin_item`而他是透過Html Verb `Get`
+最後面的`<%= link_to 'New Item', new_item_path %>`他的路由也是錯的，由於我們要建立一個新的item，所以我們`rake routes`去找`dashboard/admin/items#new`相對應的Prefix，也就是`new_dashboard_admin_item`而他是透過Html Verb `Get`，由於這邊是由scaffold生成的，所以我們可以不用給HTML Verb
+
+### 建立dashboard與admin的layout
+
+我們透過在iTerm下指令的方式複製`application.html.erb`然後再去改它
+```
+jccart/app/views/layouts
+
+ls
+>>  application.html.erb
+
+cp application.html.erb dashboard.html.erb
+cp application.html.erb admin.html.erb
+
+ls
+>> admin.html.erb		application.html.erb	dashboard.html.erb
+```
+
+### fix application.html.erb
+
+fix `app/views/layouts/application.html.erb`
+```
+<body>
+
+<h1>對外頁面:public</h1>
+
+<% if current_user %>
+
+  ...
+  ...
+  ...
+</body>  
+```
+
+這麼做的好處是，美工就能對這頁做美化
+
+### fix dashboard.html.erb
+
+fix `app/views/layouts/dashboard.html.erb`
+
+完整code
+```
+<!DOCTYPE html>
+<html>
+<head>
+  <title>JCcart</title>
+  <%= stylesheet_link_tag    'application', media: 'all' %>
+  <%= javascript_include_tag 'application' %>
+  <%= csrf_meta_tags %>
+</head>
+<body>
+
+<h1>使用者後台: dashboard</h1>
+
+Hi! <%= current_user.email %>, <%= link_to "登出", destroy_user_session_path, method: "delete" %>
+
+<%= will_paginate @paginate if @paginate %>
+
+<hr>
+
+<%= yield %>
+
+<hr>
+
+<%= will_paginate @paginate if @paginate %>
+</body>
+</html>
+
+```
+由於我們強制要登入，所以一定會有`current_user`可以用，所以delete `current_user判斷式`
+
+### fix admin.html.erb
+
+fix `app/views/layouts/admin.html.erb`
+
+```
+<!DOCTYPE html>
+<html>
+<head>
+  <title>JCcart</title>
+  <%= stylesheet_link_tag    'application', media: 'all' %>
+  <%= javascript_include_tag 'application' %>
+  <%= csrf_meta_tags %>
+</head>
+<body>
+
+<h1>後台頁面：admin</h1>
+
+Hi! <%= current_manager.email %>, <%= link_to "登出", destroy_manager_session_path, method: "delete" %>
+
+<hr>
+
+<ul>
+  <li><%= link_to "商品管理", dashboard_admin_items_path %></li>
+</ul>
+
+<%= will_paginate @paginate if @paginate %>
+
+<hr>
+
+<%= yield %>
+
+<hr>
+
+<%= will_paginate @paginate if @paginate %>
+</body>
+</html>
+```
+
+要注意：我們現在用的是管理者，所以路由要從`user`改成`manager`，`current_user`要改成`current_manager`
+
+再來是`link_to "商品管理"`。我們要先看到`全部商品`，然後才能做編輯。為了要先看到全部商品，所以我們要去找i`items#index`，所以我們要去路由找`dashboard/admin/items#index`，他的Prefix是`dashboard_admin_items`，這邊一樣是由scaffold生成的，所以不用給HTML Verb  
+
+去`localhost:3000`測試，需要先`rake db:migrate`，然後發現噴了。這是由於scaffold又幫我們建了`20160907072602_create_items.rb`與`20160907073156_create_cates.rb`，但是我們先前已經見過這兩個table了，所以我們下指令刪除它
+```
+jccart db/migrate
+
+rm 20160907072602_create_items.rb
+rm 20160907073156_create_cates.rb
+```

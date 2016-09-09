@@ -8,6 +8,8 @@
 </head>
 <body>
 
+<h1>對外頁面:public</h1>
+
 <% if current_user %>
   Hi! <%= current_user.email %>, <%= link_to "登出", destroy_user_session_path, method: "delete" %>
 <% else %>
