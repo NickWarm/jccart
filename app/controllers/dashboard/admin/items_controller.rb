@@ -1,6 +1,6 @@
 class Dashboard::Admin::ItemsController < Dashboard::Admin::AdminController
   def index
-    @items = @paginate = Item.order('id DESC').paginate(:page => params[:page])
+    @items = @paginate = Item.order('id DESC').includes(:cate).paginate(:page => params[:page])
   end
 
   def new

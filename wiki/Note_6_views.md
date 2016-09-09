@@ -625,3 +625,154 @@ default_url: "/images/missing.jpg"
 ###  測試上傳圖片
 
 在index view下，隨意點選一筆資料按下編輯，然後上傳圖片，確定能work。
+
+
+## Step.11  類別的下拉選單
+
+
+接下來的**使用者管理**、**類別管理**，都是一樣的寫法去寫，現在要教如何製作快一點的類別管理，我們先做一個產生器
+```
+rails c
+
+:001 > 10.times do |i|
+:002 >     Cate.create(:name => Faker::Pokemon.name)
+:003?>   end; true
+```
+
+如此我們就建了十個類別。
+
+### 下拉式選單的奇淫技巧 f.select
+
+這邊要教用`f.select`來做下拉式選單
+
+fix `app/views/dashboard/admin/items/edit.html.erb`
+```
+<%= form_for @item, :url => dashboard_admin_item_path, method: :patch  do |f| %>
+  ...
+  ...
+  ...
+  類別： <%= f.select Cate.all.map{|c|[c.name, c.id]} %>
+
+  <button type="submit" >送出</button>
+<% end %>
+```
+
+這邊解釋一下`Cate.all.map{|c|[c.name, c.id]}`這段，用`f.select`生成的下拉式選單，他其實是要放一個array，array裡包值`[["名稱", value]]`
+
+然後點選`編輯`，發現又噴了，JC下辜狗關鍵字`rails helper select form`，點選[ActionView::Helpers::FormBuilder](http://api.rubyonrails.org/classes/ActionView/Helpers/FormBuilder.html)然後看裡面的[select](http://api.rubyonrails.org/classes/ActionView/Helpers/FormBuilder.html#method-i-select)，發現少給了name，於是改成
+```
+類別： <%= f.select :cate_id, Cate.all.map{|c|[c.name, c.id]} %>
+```
+
+然後重整進入`編輯`頁面，就能看到漂亮的下拉選單了。我們一樣能用chrome工具檢查元素查看
+```
+<select name="item[cate_id]" id="item_cate_id"><option selected="selected" value="1">大雜燴</option>
+<option value="2">Omanyte</option>
+<option value="3">Golbat</option>
+<option value="4">Pidgeotto</option>
+<option value="5">Nidoking</option>
+<option value="6">Dragonair</option>
+<option value="7">Blastoise</option>
+<option value="8">Exeggutor</option>
+<option value="9">Vulpix</option>
+<option value="10">Magnemite</option>
+<option value="11">Geodude</option></select>
+```
+
+可以看到`name`傳了一個array進去，而`option`有著用faker生成的`各種Pokemon name`與`value`
+
+### n+1 query
+
+完成下拉選單後，我們給幾筆資料加入類別後送出，接著我們要給頁面顯示類別，但這會有一個**n+1 query**的問題，我們直接上code來看吧
+
+fix `views/dashboard/admin/items/index.html.erb`
+```
+<table>
+  <thead>
+    <tr>
+      <th>id</th>
+      <th>類別</th>
+      ...
+      ...
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @items.each do |item| %>
+      <tr>
+        <td><%= item.id %></td>
+        <td><%= item.cate.name %></td>
+        ...
+        ...
+        ...
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+```
+
+然後我們去`localhost:3000/dashboard/admin/items`就能看到剛剛輸入的類別了，接下來我們去跑`rails s`的那個iTerm tab查看他的log，可以看到像下面的code
+```sql
+Started GET "/dashboard/admin/items" for ::1 at 2016-09-09 22:09:00 +0800
+Processing by Dashboard::Admin::ItemsController#index as HTML
+  Manager Load (0.3ms)  SELECT  `managers`.* FROM `managers` WHERE `managers`.`id` = 1  ORDER BY `managers`.`id` ASC LIMIT 1
+  Item Load (0.3ms)  SELECT  `items`.* FROM `items`  ORDER BY id DESC LIMIT 30 OFFSET 0
+   (0.2ms)  SELECT COUNT(*) FROM `items`
+  Cate Load (0.2ms)  SELECT  `cates`.* FROM `cates` WHERE `cates`.`id` = 2 LIMIT 1
+  CACHE (0.0ms)  SELECT  `cates`.* FROM `cates` WHERE `cates`.`id` = 2 LIMIT 1  [["id", 2]]
+  Cate Load (0.2ms)  SELECT  `cates`.* FROM `cates` WHERE `cates`.`id` = 4 LIMIT 1
+  Cate Load (0.3ms)  SELECT  `cates`.* FROM `cates` WHERE `cates`.`id` = 3 LIMIT 1
+  CACHE (0.0ms)  SELECT  `cates`.* FROM `cates` WHERE `cates`.`id` = 3 LIMIT 1  [["id", 3]]
+  Cate Load (0.4ms)  SELECT  `cates`.* FROM `cates` WHERE `cates`.`id` = 1 LIMIT 1
+  CACHE (0.0ms)  SELECT  `cates`.* FROM `cates` WHERE `cates`.`id` = 1 LIMIT 1  [["id", 1]]
+  CACHE (0.0ms)  SELECT  `cates`.* FROM `cates` WHERE `cates`.`id` = 1 LIMIT 1  [["id", 1]]
+  CACHE (0.0ms)  SELECT  `cates`.* FROM `cates` WHERE `cates`.`id` = 1 LIMIT 1  [["id", 1]]
+  CACHE (0.0ms)  SELECT  `cates`.* FROM `cates` WHERE `cates`.`id` = 1 LIMIT 1  [["id", 1]]
+  CACHE (0.0ms)  SELECT  `cates`.* FROM `cates` WHERE `cates`.`id` = 1 LIMIT 1  [["id", 1]]
+  CACHE (0.0ms)  SELECT  `cates`.* FROM `cates` WHERE `cates`.`id` = 1 LIMIT 1  [["id", 1]]
+  CACHE (0.0ms)  SELECT  `cates`.* FROM `cates` WHERE `cates`.`id` = 1 LIMIT 1  [["id", 1]]
+  CACHE (0.0ms)  SELECT  `cates`.* FROM `cates` WHERE `cates`.`id` = 1 LIMIT 1  [["id", 1]]
+  CACHE (0.0ms)  SELECT  `cates`.* FROM `cates` WHERE `cates`.`id` = 1 LIMIT 1  [["id", 1]]
+  CACHE (0.0ms)  SELECT  `cates`.* FROM `cates` WHERE `cates`.`id` = 1 LIMIT 1  [["id", 1]]
+  CACHE (0.0ms)  SELECT  `cates`.* FROM `cates` WHERE `cates`.`id` = 1 LIMIT 1  [["id", 1]]
+  CACHE (0.0ms)  SELECT  `cates`.* FROM `cates` WHERE `cates`.`id` = 1 LIMIT 1  [["id", 1]]
+  CACHE (0.1ms)  SELECT  `cates`.* FROM `cates` WHERE `cates`.`id` = 1 LIMIT 1  [["id", 1]]
+  CACHE (0.0ms)  SELECT  `cates`.* FROM `cates` WHERE `cates`.`id` = 1 LIMIT 1  [["id", 1]]
+  CACHE (0.0ms)  SELECT  `cates`.* FROM `cates` WHERE `cates`.`id` = 1 LIMIT 1  [["id", 1]]
+  CACHE (0.0ms)  SELECT  `cates`.* FROM `cates` WHERE `cates`.`id` = 1 LIMIT 1  [["id", 1]]
+  CACHE (0.0ms)  SELECT  `cates`.* FROM `cates` WHERE `cates`.`id` = 1 LIMIT 1  [["id", 1]]
+  CACHE (0.0ms)  SELECT  `cates`.* FROM `cates` WHERE `cates`.`id` = 1 LIMIT 1  [["id", 1]]
+  CACHE (0.0ms)  SELECT  `cates`.* FROM `cates` WHERE `cates`.`id` = 1 LIMIT 1  [["id", 1]]
+  CACHE (0.0ms)  SELECT  `cates`.* FROM `cates` WHERE `cates`.`id` = 1 LIMIT 1  [["id", 1]]
+  CACHE (0.0ms)  SELECT  `cates`.* FROM `cates` WHERE `cates`.`id` = 1 LIMIT 1  [["id", 1]]
+  CACHE (0.0ms)  SELECT  `cates`.* FROM `cates` WHERE `cates`.`id` = 1 LIMIT 1  [["id", 1]]
+  CACHE (0.0ms)  SELECT  `cates`.* FROM `cates` WHERE `cates`.`id` = 1 LIMIT 1  [["id", 1]]
+  CACHE (0.0ms)  SELECT  `cates`.* FROM `cates` WHERE `cates`.`id` = 1 LIMIT 1  [["id", 1]]
+  Rendered dashboard/admin/items/index.html.erb within layouts/admin (38.0ms)
+Completed 200 OK in 65ms (Views: 61.2ms | ActiveRecord: 2.4ms)
+```
+
+這個是跑index view時，為了查詢類別所花的時間，當你類別越多花的時間越多，這就是`n+1 query`是很嚴重的效能問題，他的解法在controller內
+
+###  fix admin/items_controller
+
+fix `app/controllers/dashboard/admin/items_controller.rb`
+```
+def index
+  @items = @paginate = Item.order('id DESC').includes(:cate).paginate(:page => params[:page])
+end
+```
+
+然後重整`localhost:3000/dashboard/admin/items`，再去查看log
+```sql
+Started GET "/dashboard/admin/items" for ::1 at 2016-09-09 22:20:40 +0800
+Processing by Dashboard::Admin::ItemsController#index as HTML
+  Manager Load (0.2ms)  SELECT  `managers`.* FROM `managers` WHERE `managers`.`id` = 1  ORDER BY `managers`.`id` ASC LIMIT 1
+  Item Load (0.5ms)  SELECT  `items`.* FROM `items`  ORDER BY id DESC LIMIT 30 OFFSET 0
+  Cate Load (5.0ms)  SELECT `cates`.* FROM `cates` WHERE `cates`.`id` IN (2, 4, 3, 1)
+   (0.4ms)  SELECT COUNT(*) FROM `items`
+  Rendered dashboard/admin/items/index.html.erb within layouts/admin (43.7ms)
+Completed 200 OK in 99ms (Views: 75.0ms | ActiveRecord: 9.8ms)
+```
+
+這樣就很漂亮，只用了幾行SQL就取出了我們要的類別
