@@ -1,20 +1,27 @@
 <p id="notice"><%= notice %></p>
 
-<h1>Listing Items</h1>
+<h1>產品列表</h1>
 
 <table>
   <thead>
     <tr>
-      <th colspan="3"></th>
+      <th>id</th>
+      <th>名稱</th>
+      <th>價格</th>
+      <th>管理</th>
     </tr>
   </thead>
 
   <tbody>
     <% @items.each do |item| %>
       <tr>
-        <td><%= link_to 'Show', item %></td>
-        <td><%= link_to 'Edit', edit_item_path(item) %></td>
-        <td><%= link_to 'Destroy', item, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td><%= item.id %></td>
+        <td><%= item.name %></td>
+        <td><%= item.price %></td>
+        <td>
+          <%= link_to '編輯', edit_item_path(item) %>
+          <%= link_to '刪除', item, method: :delete, data: { confirm: '你確定嗎?' } %>
+        </td>
       </tr>
     <% end %>
   </tbody>
@@ -22,4 +29,4 @@
 
 <br>
 
-<%= link_to 'New Item', new_item_path %>
+<%= link_to 'New Item', new_dashboard_admin_item_path, method: :get %>

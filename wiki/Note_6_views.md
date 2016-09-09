@@ -166,3 +166,44 @@ fix `app/views/dashboard/admin/items/edit.html.erb`
 由於都沒用到`_form.html.erb`所以我們就去把他砍掉
 
 delete `app/views/dashboard/admin/items/_form.html.erb`
+
+### fix index
+
+fix `app/views/dashboard/admin/items/index.html.erb`
+改成
+```
+<p id="notice"><%= notice %></p>
+
+<h1>產品列表</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>id</th>
+      <th>名稱</th>
+      <th>價格</th>
+      <th>管理</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @items.each do |item| %>
+      <tr>
+        <td><%= item.id %></td>
+        <td><%= item.name %></td>
+        <td><%= item.price %></td>
+        <td>
+          <%= link_to '編輯', edit_item_path(item) %>
+          <%= link_to '刪除', item, method: :delete, data: { confirm: '你確定嗎?' } %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Item', new_dashboard_admin_item_path, method: :get %>
+```
+
+最後面的`<%= link_to 'New Item', new_item_path %>`他的路由也是錯的，由於我們要建立一個新的item，所以我們`rake routes`去找`dashboard/admin/items#new`相對應的Prefix，也就是`new_dashboard_admin_item`而他是透過Html Verb `Get`
