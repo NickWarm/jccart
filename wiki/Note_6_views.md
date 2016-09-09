@@ -602,3 +602,26 @@ default_url: "/images/missing.jpg"
 ```
 
 所以我們也要把`missing.jpg`他的路徑從`public/images/icon/missing.jpg`改成`public/images/missing.jpg`，然後再重整`localhost:3000/dashboard/admin/items`，我們的圖片就能work了
+
+### 在view裡設定圖片大小
+
+由於我一開始找的圖片就是`150x150`沒法體會到太大張的困擾，所以我們來找第二張圖片玩玩吧。我找了一個`200x200`的[X圖片](https://d30y9cdsu7xlg0.cloudfront.net/png/275465-200.png)，然後命名為`missing2.jpg`
+
+一樣去改`app/models/iterm.rb`，改成`efault_url: "/images/missing2.jpg"`，然後再重整`localhost:3000/dashboard/admin/items`，可以明顯感受到他圖片變大了
+
+接著我們去修改`app/views/dashboard/admin/items/index.html.erb`
+```
+<tbody>
+  <% @items.each do |item| %>
+    <tr>
+      <td><%= item.id %></td>
+      <td><%= image_tag item.cover.url(:icon), :width => 150, :height => 150 %></td>
+      ...
+      ...
+</tbody>
+```
+再重整`localhost:3000/dashboard/admin/items`，圖片順利變小
+
+###  測試上傳圖片
+
+在index view下，隨意點選一筆資料按下編輯，然後上傳圖片，確定能work。
