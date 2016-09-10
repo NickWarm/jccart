@@ -1,7 +1,7 @@
 class ItemsController < ApplicationController
   before_action :set_item, only: [:show, :edit, :update, :destroy]
   def add_cart
-    session[:cart] || = {}
+    session[:cart] ||= {}
     item = Item.where(:id => params[:id]).first
 
     if item

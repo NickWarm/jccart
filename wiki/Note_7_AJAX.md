@@ -198,4 +198,28 @@ fix `app/views/layouts/application.html.erb`
 
 ### fix items_controller
 
-然後檢查頁面時發現噴了
+然後檢查頁面時發現噴了，大概是因為我的rails版本跟JC不同，我是噴出
+```
+app/controllers/items_controller.rb:4: syntax error, unexpected '=' session[:cart] || = {} ^
+```
+檢查良久發現，我在`session[:cart]`的宣告時寫成`|| =`，`||`與`=`之間多一個空格就噴錯了，他們之間不能有空格
+
+fix `app/controllers/items_controller.rb`
+```
+def add_cart
+  session[:cart] ||= {}
+  ...
+  ...
+end
+```
+
+### 順手改成JC寫的items_controller
+
+由於我的rails沒生成`respond_with`，老實說沒必要改，不過JC都說用不到，我們就稍微改成JC在影片中的樣子吧
+
+fix `app/controllers/items_controller.rb`
+
+完整的code
+```
+
+```
