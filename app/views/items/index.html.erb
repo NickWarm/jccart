@@ -5,16 +5,18 @@
 <table>
   <thead>
     <tr>
-      <th colspan="3"></th>
+      <th>圖片</th>
+      <th>名稱</th>
+      <th>管理</th>
     </tr>
   </thead>
 
   <tbody>
     <% @items.each do |item| %>
       <tr>
-        <td><%= link_to 'Show', item %></td>
-        <td><%= link_to 'Edit', edit_item_path(item) %></td>
-        <td><%= link_to 'Destroy', item, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td><%= image_tag item.cover.url(:icon) %></td>
+        <td><%= item.name %>(<%= item.price %>)</td>
+        <td>加入購物車</td>
       </tr>
     <% end %>
   </tbody>
