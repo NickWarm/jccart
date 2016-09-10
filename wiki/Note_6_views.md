@@ -1,9 +1,10 @@
 ## Step.8 把static砍掉，然後用scaffold快速建東西
+<br>
 
 砍掉`app/controllers/statics_controller`
 
 fix `routes.rb`
-```
+```rb
 Rails.application.routes.draw do
   devise_for :managers
   devise_for :users
@@ -18,7 +19,7 @@ Rails.application.routes.draw do
 
 然後修改資料夾名稱，把`app/views/statics`改成`app/views/items`
 
-<br>
+
 ### 用scaffold
 
 建立資料夾`app/views/dashboard/admin/items`
@@ -43,7 +44,7 @@ Overwrite /Users/nicholas/Desktop/pracCart/JCcart/app/models/item.rb? (enter "h"
 rails g scaffold cates
 ```
 
-<br>
+
 ### 砍掉不要的
 
 然後JC把`views/items`下的檔案全複製到`views/dashboard/admin`，透過在iTerm下指令
@@ -72,7 +73,7 @@ rm new.html.erb
 ```
 
 <br>
-##Step.9 開始修scaffold
+## Step.9 開始修scaffold
 <br>
 
 ### \_form
@@ -88,7 +89,7 @@ fix `app/views/dashboard/admin/items/_form.html.erb`，只留下
 fix `app/views/dashboard/admin/items/edit.html.erb`
 
 完整code
-```
+```html
 <h1>Editing Item</h1>
 
 <%= form_for @item, dashboard_admin_item_path, method: :patch  do |f| %>
@@ -100,7 +101,7 @@ fix `app/views/dashboard/admin/items/edit.html.erb`
 ```
 
 先改成這樣，但是他的route是錯的
-```
+```html
 <h1>Editing Item</h1>
 
 <%= form_for @item  do |f| %>
@@ -133,7 +134,7 @@ edit_dashboard_admin_item GET    /dashboard/admin/items/:id/edit(.:format)    da
 fix `app/views/dashboard/admin/items/new.html.erb`
 
 完整code
-```
+```html
 <h1>New Item</h1>
 
 <%= form_for @item, dashboard_admin_items_path, method: :post  do |f| %>
@@ -152,7 +153,7 @@ JC在此手刻了表單內容。
 ### fix edit
 
 fix `app/views/dashboard/admin/items/edit.html.erb`
-```
+```html
 <h1>Editing Item</h1>
 
 <%= form_for @item, dashboard_admin_item_path, method: :patch  do |f| %>
@@ -171,7 +172,7 @@ delete `app/views/dashboard/admin/items/_form.html.erb`
 
 fix `app/views/dashboard/admin/items/index.html.erb`
 改成
-```
+```html
 <p id="notice"><%= notice %></p>
 
 <h1>產品列表</h1>
@@ -247,7 +248,7 @@ fix `app/views/layouts/application.html.erb`
 fix `app/views/layouts/dashboard.html.erb`
 
 完整code
-```
+```html
 <!DOCTYPE html>
 <html>
 <head>
@@ -281,7 +282,7 @@ Hi! <%= current_user.email %>, <%= link_to "登出", destroy_user_session_path, 
 
 fix `app/views/layouts/admin.html.erb`
 
-```
+```rb
 <!DOCTYPE html>
 <html>
 <head>
@@ -321,7 +322,7 @@ Hi! <%= current_manager.email %>, <%= link_to "登出", destroy_manager_session_
 
 ### 測試剛剛打的頁面是否都能work
 
-##### `localhost:3000`
+##### 頁面：`localhost:3000`
 
 去`localhost:3000`測試，需要先`rake db:migrate`，然後發現噴了。這是由於scaffold又幫我們建了`20160907072602_create_items.rb`與`20160907073156_create_cates.rb`，但是我們先前已經見過這兩個table了，所以我們下指令刪除它
 ```
@@ -333,7 +334,7 @@ rm 20160907073156_create_cates.rb
 
 然後我們再重整`localhost:3000`的頁面，就能順利work了。
 
-##### `localhost:3000/dashboard/admin/items`
+##### 頁面：`localhost:3000/dashboard/admin/items`
 
 測試時`localhost:3000/dashboard/admin/items`，會發現我們被轉到`localhost:3000/managers/sign_in`，要我們登入manager
 
@@ -348,7 +349,7 @@ rm 20160907073156_create_cates.rb
 
 fix `app/controllers/dashboard/admin/items_controller.rb`
 
-```
+```rb
 class Dashboard::Admin::ItemsController < Dashboard::Admin::AdminController
   def index
     @items = @paginate = Item.paginate(:page => params[:page])
@@ -363,7 +364,7 @@ end
 成功後會發現`h1`tag寫得是`對外頁面：public`，是因為我們少一個語句在controller內
 
 fix `app/controllers/dashboard/admin/admin_controller.rb`
-```
+```rb
 class Dashboard::Admin::AdminController < ApplicationController
   before_action :authenticate_manager!
   layout 'admin'
@@ -372,7 +373,9 @@ end
 
 當我們在` Dashboard::Admin::AdminController`寫上`layout 'admin'`後，所有繼承他的controller，自動變成後台的頁面。
 
-## Step.9 寫一支機器人塞亂數產品進去
+<br>
+## Step.10 寫一支機器人塞亂數產品進去
+<br>
 
 裝新的gem `faker`
 
@@ -395,7 +398,9 @@ rails c
 
 然後發現噴了，查看錯誤訊息，是因為少了default的`cate_id`
 ```
-ActiveRecord::StatementInvalid: Mysql2::Error: Field 'cate_id' doesn't have a default value: INSERT INTO `items` (`name`, `price`, `created_at`, `updated_at`) VALUES ('Virginia', 2474, '2016-09-09 08:45:00', '2016-09-09 08:45:00')
+ActiveRecord::StatementInvalid: Mysql2::Error: Field 'cate_id' doesn't have a default value:
+            INSERT INTO `items` (`name`, `price`, `created_at`, `updated_at`)
+            VALUES ('Virginia', 2474, '2016-09-09 08:45:00', '2016-09-09 08:45:00')
 ```
 
 所以我們再繼續
@@ -410,7 +415,7 @@ ActiveRecord::StatementInvalid: Mysql2::Error: Field 'cate_id' doesn't have a de
 ### fix admin/items_controller
 
 fix `app/controllers/dashboard/admin/items_controller.rb`
-```
+```rb
 class Dashboard::Admin::ItemsController < Dashboard::Admin::AdminController
   def index
     @items = @paginate = Item.order('id DESC').paginate(:page => params[:page])
@@ -504,12 +509,13 @@ end
 眼角餘光掃到`destroy action`也沒有，一樣加上`@item = Item.find(params[:id])`
 
 <br>
-## Step.10 加上圖片
+## Step.11 加上圖片
+<br>
 
 ### fix admin/items/edit.html.erb
 
 fix `app/views/dashboard/admin/items/edit.html.erb`
-```
+```html
 <h1>Editing Item</h1>
 
 <%= form_for @item, :url => dashboard_admin_item_path, method: :patch  do |f| %>
@@ -525,7 +531,7 @@ fix `app/views/dashboard/admin/items/edit.html.erb`
 為了讓圖片顯示出來，列表下也有必要有圖片
 
 fix `app/views/dashboard/admin/items/index.html.erb`
-```
+```html
 <h1>產品列表</h1>
 
 <table>
@@ -575,7 +581,7 @@ mv icon-question.png missing.jpg
 現在我們把icon設定成`jpg`檔，可是我們剛剛用chrome工具查到的是使用`png`檔，我們可以去iterm model改他
 
 fix `app/models/iterm.rb`
-```
+```rb
 class Item < ActiveRecord::Base
   belongs_to :cate
 
@@ -610,7 +616,7 @@ default_url: "/images/missing.jpg"
 一樣去改`app/models/iterm.rb`，改成`efault_url: "/images/missing2.jpg"`，然後再重整`localhost:3000/dashboard/admin/items`，可以明顯感受到他圖片變大了
 
 接著我們去修改`app/views/dashboard/admin/items/index.html.erb`
-```
+```html
 <tbody>
   <% @items.each do |item| %>
     <tr>
@@ -627,7 +633,7 @@ default_url: "/images/missing.jpg"
 在index view下，隨意點選一筆資料按下編輯，然後上傳圖片，確定能work。
 
 
-## Step.11  類別的下拉選單
+## Step.12  類別的下拉選單
 
 
 接下來的**使用者管理**、**類別管理**，都是一樣的寫法去寫，現在要教如何製作快一點的類別管理，我們先做一個產生器
@@ -665,7 +671,7 @@ fix `app/views/dashboard/admin/items/edit.html.erb`
 ```
 
 然後重整進入`編輯`頁面，就能看到漂亮的下拉選單了。我們一樣能用chrome工具檢查元素查看
-```
+```html
 <select name="item[cate_id]" id="item_cate_id"><option selected="selected" value="1">大雜燴</option>
 <option value="2">Omanyte</option>
 <option value="3">Golbat</option>
@@ -686,7 +692,7 @@ fix `app/views/dashboard/admin/items/edit.html.erb`
 完成下拉選單後，我們給幾筆資料加入類別後送出，接著我們要給頁面顯示類別，但這會有一個**n+1 query**的問題，我們直接上code來看吧
 
 fix `views/dashboard/admin/items/index.html.erb`
-```
+```html
 <table>
   <thead>
     <tr>
