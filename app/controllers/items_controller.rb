@@ -3,7 +3,7 @@ class ItemsController < ApplicationController
 
   # GET /items
   def index
-    @items = Item.all
+    @items = @paginate = Item .includes(:cate).paginate(:page => params[:page])
   end
 
   # GET /items/1
