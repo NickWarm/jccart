@@ -1,10 +1,18 @@
 Rails.application.routes.draw do
-  resources :cates
-  resources :items
-  devise_for :managers
-  devise_for :users
   # 分三層
   # 第一層：public
+
+  resources :cates
+  resources :items do
+    member do
+      get :add_cart
+    end
+  end
+
+
+  devise_for :managers
+  devise_for :users
+
 
   root "items#index"
 
