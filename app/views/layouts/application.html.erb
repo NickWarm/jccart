@@ -9,6 +9,7 @@
 <body>
 
 <h1>對外頁面:public</h1>
+<div>購物車數量<span class="cart_counter"></span></div>
 
 <% if current_user %>
   Hi! <%= current_user.email %>, <%= link_to "登出", destroy_user_session_path, method: "delete" %>

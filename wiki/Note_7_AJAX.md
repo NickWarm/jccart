@@ -173,6 +173,29 @@ render :json => {:counter => session[:cart].length}.to_json
 ```
 
 
-###
+### get_cart_count helper
 
 我們對外是用AJAX取這數字，但在此之前我們先建一個helper來取`sessino[:cart]`
+
+fix `app/helpers/application_helper.rb`
+```
+module ApplicationHelper
+  def get_cart_count
+    if session[:cart]
+      return session[:cart].length
+    else
+      return 0  
+    end
+  end
+end
+```
+
+fix `app/views/layouts/application.html.erb`
+```
+<h1>對外頁面:public</h1>
+<div>購物車數量<span class="cart_counter"></span></div>
+```
+
+### fix items_controller
+
+然後檢查頁面時發現噴了
