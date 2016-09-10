@@ -213,13 +213,39 @@ def add_cart
 end
 ```
 
-### 順手改成JC寫的items_controller
+### 順手改成JC版的items_controller
 
-由於我的rails沒生成`respond_with`，老實說沒必要改，不過JC都說用不到，我們就稍微改成JC在影片中的樣子吧
+由於我的rails沒生成`respond_with`，老實說沒必要改，不過JC都說很多東西用不到，就順手改成JC在影片中的樣子吧
 
 fix `app/controllers/items_controller.rb`
 
 完整的code
 ```
+class ItemsController < ApplicationController
+
+  def add_cart
+    session[:cart] ||= {}
+    item = Item.where(:id => params[:id]).first
+
+    if item
+      session[:cart][item.id] ||= 0
+      session[:cart][item.id] += 1
+    end
+
+    render :json => {:counter => session[:cart].length}.to_json
+  end
+
+
+  # GET /items
+  def index
+    @items = @paginate = Item .includes(:cate).paginate(:page => params[:page])
+  end
+
+  # GET /items/1
+  def show
+    @item = Item.find(params[:id])
+  end
+
+end
 
 ```
