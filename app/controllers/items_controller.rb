@@ -5,8 +5,9 @@ class ItemsController < ApplicationController
     item = Item.where(:id => params[:id]).first
 
     if item
-      session[:cart][item.id] ||= 0
-      session[:cart][item.id] += 1
+      key = item.id.to_s
+      session[:cart][key] ||= 0
+      session[:cart][key] += 1
     end
 
     render :json => {:counter => session[:cart].length}.to_json

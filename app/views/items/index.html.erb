@@ -1,4 +1,15 @@
-<p id="notice"><%= notice %></p>
+<% content_for :header do %>
+<script>
+  jQuery(function($){
+   $('.add_cart').click(function(){
+     $.getJSON('/items/' + $(this).attr('data-value') + '/add_cart', function(json){
+      $('#cart_counter').html(json.counter);
+    });
+    return false;
+   });
+  })
+</script>
+<% end %>
 
 <h1>Listing Items</h1>
 
@@ -16,7 +27,7 @@
       <tr>
         <td><%= image_tag item.cover.url(:icon) %></td>
         <td><%= item.name %>(<%= item.price %>)</td>
-        <td>加入購物車</td>
+        <td><a href="#" class="add_cart" data-value="<%= item.id %>">加入購物車</a></td>
       </tr>
     <% end %>
   </tbody>

@@ -1,4 +1,4 @@
-## Step.13 購物車的AJAX
+## Step.13 購物車的邏輯
 <br>
 
 ### 修改對外頁面的畫面
@@ -190,10 +190,12 @@ module ApplicationHelper
 end
 ```
 
+### 在application中使用get_cart_count helper
+
 fix `app/views/layouts/application.html.erb`
 ```
 <h1>對外頁面:public</h1>
-<div>購物車數量<span class="cart_counter"></span></div>
+<div>購物車數量<span class="cart_counter"><%= get_cart_count %></span></div>
 ```
 
 ### fix items_controller
@@ -249,3 +251,198 @@ class ItemsController < ApplicationController
 end
 
 ```
+
+<br>
+## Step.14 重頭戲：購物車的AJAX
+
+### 要先挖洞放JavaScript與CSS的地方
+
+fix `app/views/layouts/application.html.erb`  
+```
+<html>
+<head>
+  <title>JCcart</title>
+  <%= stylesheet_link_tag    'application', media: 'all' %>
+  <%= javascript_include_tag 'application' %>
+  <%= csrf_meta_tags %>
+  <%= yield :header %>
+</head>
+```
+
+###  剛剛挖好的洞，他的code運作的位置
+
+fix `app/views/items/index.html.erb`
+```
+<% content_for :header do %>
+
+<% end %>
+
+<h1>Listing Items</h1>
+
+<table>
+
+  ...
+  ...
+  ...
+</table>
+```
+
+
+### 開始寫AJAX
+
+先寫jQuery的語法
+```
+<% content_for :header do %>
+<script>
+  jQuery(function($){
+
+  })
+</script>
+<% end %>
+```
+
+
+用`<a>`來做**加入購物車**的選項
+```
+<tbody>
+  <% @items.each do |item| %>
+    <tr>
+      ...
+      ...
+      <td><a href="#" class="add_cart" data-value="<%= item.id %>">加入購物車</a></td>
+    </tr>
+  <% end %>
+```
+
+我們就能用jQuery選取器來選`<a>`的class `add_cart`
+```
+<script>
+  jQuery(function($){
+   $('.add_cart').click(function(){
+
+   });
+  })
+</script>
+```
+
+我們要`rake routes`查看網址
+```
+add_cart_item GET    /items/:id/add_cart(.:format)                items#add_cart
+        items GET    /items(.:format)                             items#index
+             POST   /items(.:format)                             items#create
+     new_item GET    /items/new(.:format)                         items#new
+    edit_item GET    /items/:id/edit(.:format)                    items#edit
+         item GET    /items/:id(.:format)                         items#show
+            PATCH  /items/:id(.:format)                         items#update
+              PUT    /items/:id(.:format)                         items#update
+           DELETE /items/:id(.:format)                         items#destroy
+```
+
+看`URI Pattern`那一欄，我們剛剛談`member`時有說過，要從item的idd去增加購物車數量，所以我們找`/items/:id/add_cart(.:format)`，他的HTML Verb是`GET`
+
+由於我們剛剛在`items_controller`的`add_cart`action最後是傳`json`，他的網址就是我們剛剛查到的`/items/:id/add_cart`
+```
+<script>
+  jQuery(function($){
+   $('.add_cart').click(function(){
+     $.getJSON('/items/:id/add_cart')
+   });
+  })
+</script>
+```
+
+不過由於`:id`是變數，我們要取的是item的`id`，也就是`<a>`下的`data-value="<%= item.id %>"`
+```
+<script>
+  jQuery(function($){
+   $('.add_cart').click(function(){
+     $.getJSON('/items/' + $(this).attr('data-value') + '/add_cart')
+   });
+  })
+</script>
+```
+
+我們預計會得到一個`json`回來，但`json`回來預計要更新到某一個地方
+```
+<script>
+  jQuery(function($){
+   $('.add_cart').click(function(){
+     $.getJSON('/items/' + $(this).attr('data-value') + '/add_cart', function(json){
+
+     })
+   });
+  })
+</script>
+```
+
+這地方就是`localhost:3000/`這頁上面的`購物車數量：0`，我們一樣用chrome工具查看
+```
+<span class="cart_counter">0</span>
+```
+於是我們知道，他的class是`cart_counter`
+
+於是
+```
+<script>
+  jQuery(function($){
+   $('.add_cart').click(function(){
+     $.getJSON('/items/' + $(this).attr('data-value') + '/add_cart', function(json){
+      $('#cart_counter').html();
+     })
+   });
+  })
+</script>
+```
+
+但我們取了的`json`究竟傳了什麼回來呢，我們回去看`app/controllers/items_controller.rb`
+```
+def add_cart
+  session[:cart] ||= {}
+  item = Item.where(:id => params[:id]).first
+
+  if item
+    session[:cart][item.id] ||= 0
+    session[:cart][item.id] += 1
+  end
+
+  render :json => {:counter => session[:cart].length}.to_json
+end
+```
+
+`json`回傳了一個`:counter`的Key，對一個Value `session[:cart].length`。所以我們AJAX得到的`json`就會是
+```
+$('#cart_counter').html(json.counter);
+```
+
+最後記得，如果不要click去觸發event，記得要用`return false;`
+```
+jQuery(function($){
+ $('.add_cart').click(function(){
+   $.getJSON('/items/' + $(this).attr('data-value') + '/add_cart', function(json){
+    $('#cart_counter').html(json.counter);
+  });
+
+  return false;
+ });
+})
+</script>
+```
+
+### 解購物車沒即時AJAX的蟲
+
+重整頁面後，按了幾次`加入購物車`沒反應，重整後才發現購物車數字有增加，抓了許久蟲後發現，`application.html.erb`我要AJAX的`span`應該用`#cart_counter`我卻寫成`.cart_counter`
+
+fix `app/views/layouts/application.html.erb` from
+```
+<h1>對外頁面:public</h1>
+<div>購物車數量：<span class="cart_counter"><%= get_cart_count %></span></div>
+```
+
+to
+
+```
+<h1>對外頁面:public</h1>
+<div>購物車數量：<span id="cart_counter"><%= get_cart_count %></span></div>
+```
+
+### 
