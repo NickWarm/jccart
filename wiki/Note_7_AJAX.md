@@ -427,12 +427,16 @@ jQuery(function($){
 })
 </script>
 ```
+如果沒用`return false;`，他會觸發`<a href="#">`導致我們重新讀一次這個頁面
 
 ### 解購物車沒即時AJAX的蟲
 
 重整頁面後，按了幾次`加入購物車`沒反應，重整後才發現購物車數字有增加，抓了許久蟲後發現，`application.html.erb`我要AJAX的`span`應該用`#cart_counter`我卻寫成`.cart_counter`
 
-fix `app/views/layouts/application.html.erb` from
+fix `app/views/layouts/application.html.erb`
+
+from
+
 ```
 <h1>對外頁面:public</h1>
 <div>購物車數量：<span class="cart_counter"><%= get_cart_count %></span></div>
@@ -445,4 +449,42 @@ to
 <div>購物車數量：<span id="cart_counter"><%= get_cart_count %></span></div>
 ```
 
-### 
+###  購物車數字怪怪的問題
+
+我們可以debug他，把它印出來
+
+add to `app/views/layouts/application.html.erb`
+```
+<h1>對外頁面:public</h1>
+<div>購物車數量：<span id="cart_counter"><%= get_cart_count %></span></div>
+<br>
+<%= session[:cart] %>
+```
+
+然後我們去看`localhost:3000/`的最上面可看到
+
+```
+{"1"=>9, "2"=>3, "3"=>1, "4"=>1}
+```
+從印出的畫面我們知道，`session[:cart]`的key是string，所以我們應該要把`session[:cart]`的key都轉成string
+
+fix `app/controllers/items_controller.rb`
+
+from
+
+```
+  if item
+    session[:cart][item.id] ||= 0
+    session[:cart][item.id] += 1  
+  end
+```
+
+to
+
+```
+if item
+  key = item.id.to_s
+  session[:cart][key] ||= 0
+  session[:cart][key] += 1
+end
+```
