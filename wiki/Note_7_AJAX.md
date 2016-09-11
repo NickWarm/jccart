@@ -488,3 +488,110 @@ if item
   session[:cart][key] += 1
 end
 ```
+
+###  改掉用table顯示商品的寫法，加上CSS
+
+fix `app/views/items/index.html.erb`
+
+```
+<% content_for :header do %>
+<style>
+  ul.items, ul.items li{
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+</style>
+
+<script>
+...
+...
+```
+
+原本的`table`這寫法很醜，通常上production會拆成`ul`跟`li`
+
+fix `app/views/items/index.html.erb`
+
+from
+
+```
+<table>
+  <thead>
+    <tr>
+      <th>圖片</th>
+      <th>名稱</th>
+      <th>管理</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @items.each do |item| %>
+      <tr>
+        <td><%= image_tag item.cover.url(:icon) %></td>
+        <td><%= item.name %>(<%= item.price %>)</td>
+        <td><a href="#" class="add_cart" data-value="<%= item.id %>">加入購物車</a></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+```
+
+to
+
+```
+<ul class="items">
+  <% @items.each do |item| %>
+    <li>
+      <%= image_tag item.cover.url(:icon) %>
+      <span class="name"><%= item.name %>(<%= item.price %>)</span>
+      <a href="#" class="add_cart" data-value="<%= item.id %>">加入購物車</a>
+    </li>
+  <% end %>
+</ul>
+```
+
+接著我們繼續改CSS
+```
+<style>
+  ul.items, ul.items li{
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  ul.items li{
+    display: block;
+    float: left;
+    border: 1px #ccc solid;
+    border-radius: 6px;
+    width: 120px;
+    height: 180px;
+    margin: 4px 0 0 4px;
+    text-align: center;
+  }
+
+  ul.items li img{
+    width: 120px;
+    height: 120px;
+    display: block;
+    border-radius: 8px;
+  }
+
+  ul.items li .name{
+    display: block;
+  }
+
+  ul.items li a{
+    display: inner-block;
+    background: #ccccff;
+    padding: 4px 8px;
+    border-radius: 3px;
+  }
+</style>
+```
+
+然後重整`localhost:3000`，work!!!  
+
+由於時間不夠，沒實作串金流，只有口述，請看影片[2:36:24](https://youtu.be/r2sLYTQwgtQ?t=9384)，可看 tienshunlo的筆記[http://tienshunlo-blog.logdown.com/posts/711622-25d-shopping-cart]
+
+# 結束 ^_^

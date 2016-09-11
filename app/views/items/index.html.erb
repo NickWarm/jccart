@@ -1,4 +1,42 @@
 <% content_for :header do %>
+<style>
+  ul.items, ul.items li{
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  ul.items li{
+    display: block;
+    float: left;
+    border: 1px #ccc solid;
+    border-radius: 6px;
+    width: 120px;
+    height: 180px;
+    margin: 4px 0 0 4px;
+    text-align: center;
+  }
+
+  ul.items li img{
+    width: 120px;
+    height: 120px;
+    display: block;
+    border-radius: 8px;
+  }
+
+  ul.items li .name{
+    display: block;
+  }
+
+  ul.items li a{
+    display: inner-block;
+    background: #ccccff;
+    padding: 4px 8px;
+    border-radius: 3px;
+  }
+</style>
+
+
 <script>
   jQuery(function($){
    $('.add_cart').click(function(){
@@ -13,24 +51,12 @@
 
 <h1>Listing Items</h1>
 
-<table>
-  <thead>
-    <tr>
-      <th>圖片</th>
-      <th>名稱</th>
-      <th>管理</th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <% @items.each do |item| %>
-      <tr>
-        <td><%= image_tag item.cover.url(:icon) %></td>
-        <td><%= item.name %>(<%= item.price %>)</td>
-        <td><a href="#" class="add_cart" data-value="<%= item.id %>">加入購物車</a></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
-
-<br>
+<ul class="items">
+  <% @items.each do |item| %>
+    <li>
+      <%= image_tag item.cover.url(:icon) %>
+      <span class="name"><%= item.name %>(<%= item.price %>)</span>
+      <a href="#" class="add_cart" data-value="<%= item.id %>">加入購物車</a>
+    </li>
+  <% end %>
+</ul>
