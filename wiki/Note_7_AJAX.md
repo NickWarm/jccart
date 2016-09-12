@@ -551,7 +551,7 @@ to
 ```
 
 接著我們繼續改CSS
-```
+```css
 <style>
   ul.items, ul.items li{
     list-style: none;
@@ -592,6 +592,6 @@ to
 
 然後重整`localhost:3000`，work!!!  
 
-由於時間不夠，沒實作串金流，只有口述，請看影片[2:36:24](https://youtu.be/r2sLYTQwgtQ?t=9384)，可看 tienshunlo的筆記[http://tienshunlo-blog.logdown.com/posts/711622-25d-shopping-cart]
+由於時間不夠，沒實作串金流，只有口述，請看影片[2:36:24](https://youtu.be/r2sLYTQwgtQ?t=9384)，可看[tienshunlo的筆記](http://tienshunlo-blog.logdown.com/posts/711622-25d-shopping-cart)
 
 # 結束 ^_^

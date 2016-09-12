@@ -24,3 +24,7 @@ GitHub：[NickWarm](https://github.com/NickWarm)
 ### 筆記與mindmapping
 
 請見`app/wiki`
+
+### 筆記待改進的地方
+
+Note_2 要解釋table為何這樣寫

@@ -14,14 +14,14 @@ create `app/controllers/dashboard/dashboard_controller.rb`
 
 
 一開始先建立
-```
+```rb
 class Dashboard::DashboardController < ApplicationController
 
 end
 ```
 
 現在來解釋這段，我們可以先下`cmd + p`找到`application_controller.rb`。
-```
+```rb
 class ApplicationController < ActionController::Base
 ```
 我們可以看到`application_controller.rb`是繼承自`ActionController::Base`
@@ -31,16 +31,16 @@ class ApplicationController < ActionController::Base
 為了享有ApplicationController的便利，我們繼承ApplicationController。
 
 這層叫dashboard，所以一開始打dashboard的namespace
-```
+```rb
 Dashboard:: < ActionController::Base
 ```
 再來是`dashboard_controller.rb`他的全名
-```
+```rb
 Dashboard::DashboardController < ActionController::Base
 ```
 
 接著我們去[devise GitHub](https://github.com/plataformatec/devise)，看到**Controller filters and helpers**，於是我們在`dashboard_controller.rb`加上
-```
+```rb
 before_action :authenticate_user!
 ```
 
@@ -52,7 +52,7 @@ before_action :authenticate_user!
 create `app/controllers/dashboard/orders_controller.rb`
 
 在此，我們就能繼承剛剛的`Dashboard::DashboardController`
-```
+```rb
 class Dashboard::OrdersController < Dashboard::DashboardController
 
 end
@@ -64,14 +64,14 @@ end
 create `app/controllers/dashboard/admin/admin_controller.rb`
 
 這一次，我們在`namespace :admin`這一層，而`namespace :admin`又在`namespace :dashboard`裡面，所以跟`dashboard_controller`一樣的概念，我們繼承自`ApplicationController`
-```
+```rb
 class Dashboard::Admin::AdminController < ApplicationController
 
 end
 ```
 
 一樣驗證，是否有manager進去
-```
+```rb
 before_action :authenticate_manager!
 ```
 
@@ -79,7 +79,7 @@ before_action :authenticate_manager!
 ### items_controller
 
 create `app/controllers/dashboard/admin/items_controller.rb`
-```
+```rb
 class Dashboard::Admin::ItemsController < Dashboard::Admin::AdminController
 
 end
@@ -91,7 +91,7 @@ end
 #### cates_controller
 
 create `app/controllers/dashboard/admin/cates_controller.rb`
-```
+```rb
 class Dashboard::Admin::CatesController < Dashboard::Admin::AdminController
 
 end
@@ -101,7 +101,7 @@ end
 #### cates_controller
 
 create `app/controllers/dashboard/admin/cates_controller.rb`
-```
+```rb
 class Dashboard::Admin::CatesController < Dashboard::Admin::AdminController
 
 end
@@ -111,7 +111,7 @@ end
 #### orders_controller
 
 create `app/controllers/dashboard/admin/orders_controller.rb`
-```
+```rb
 class Dashboard::Admin::OrdersController < Dashboard::Admin::AdminController
 
 end
@@ -121,7 +121,7 @@ end
 #### users_controller
 
 create `app/controllers/dashboard/admin/users_controller.rb`
-```
+```rb
 class Dashboard::Admin::UsersController < Dashboard::Admin::AdminController
 
 end
@@ -131,7 +131,7 @@ end
 #### managers_controller
 
 create `app/controllers/dashboard/admin/managers_controller.rb`
-```
+```rb
 class Dashboard::Admin::ManagersController < Dashboard::Admin::AdminController
 
 end
@@ -158,7 +158,7 @@ rails c
 `rails s`啟動server後，網址打`localhost:3000/users/sign_up`，會發現噴掉說找不到`turbolinks`，這是因為我們一開始就把`turbolinks`給關掉了
 
 於是我們去`app/views/layouts/application.html.erb`，改成
-```
+```html
 <!DOCTYPE html>
 <html>
 <head>

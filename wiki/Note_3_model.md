@@ -4,6 +4,9 @@
 #### Manager model
 
 fix `app/models/manager.rb`
+
+from
+
 ```
 class Manager < ActiveRecord::Base
   # Include default devise modules. Others available are:
@@ -13,7 +16,8 @@ class Manager < ActiveRecord::Base
 end
 ```
 
-變成
+to
+
 ```
 class Manager < ActiveRecord::Base
   devise :database_authenticatable
@@ -25,6 +29,9 @@ end
 #### User model
 
 fix `app/models/user.rb`
+
+from
+
 ```
 class User < ActiveRecord::Base
   # Include default devise modules. Others available are:
@@ -34,7 +41,8 @@ class User < ActiveRecord::Base
 end
 ```
 
-變成
+to
+
 ```
 class User < ActiveRecord::Base
   devise :database_authenticatable, :registerable

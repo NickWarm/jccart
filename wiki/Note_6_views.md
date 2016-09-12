@@ -228,7 +228,7 @@ ls
 ### fix application.html.erb
 
 fix `app/views/layouts/application.html.erb`
-```
+```html
 <body>
 
 <h1>對外頁面:public</h1>
@@ -499,7 +499,7 @@ fix `app/views/dashboard/admin/items/edit.html.erb`
 接著，我們隨便找一個來編輯，改掉價格後送出，又噴`undefined method "update" for nil:NilClass`，是因為我們在controller的`upeate action`沒有宣告`@item`
 
 fix `app/controllers/dashboard/admin/items_controller.rb`
-```
+```rb
 def update
   @item = Item.find(params[:id])
   ...
@@ -652,7 +652,7 @@ rails c
 這邊要教用`f.select`來做下拉式選單
 
 fix `app/views/dashboard/admin/items/edit.html.erb`
-```
+```html
 <%= form_for @item, :url => dashboard_admin_item_path, method: :patch  do |f| %>
   ...
   ...
@@ -763,7 +763,7 @@ Completed 200 OK in 65ms (Views: 61.2ms | ActiveRecord: 2.4ms)
 ###  fix admin/items_controller
 
 fix `app/controllers/dashboard/admin/items_controller.rb`
-```
+```rb
 def index
   @items = @paginate = Item.order('id DESC').includes(:cate).paginate(:page => params[:page])
 end

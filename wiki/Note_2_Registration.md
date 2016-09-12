@@ -1,5 +1,7 @@
 ## Step.3 註冊系統
 <br><br>
+
+
 使用`devise`這個gem，[devise GitHub](https://github.com/plataformatec/devise)
 
 先在我們的專案裝好devise
@@ -16,7 +18,7 @@ rails g devise Manager
 接著去修改`XXXXXXX_devise_create_users.rb`，JC解釋了這些功能，然後把`Recoverable`、`Rememberable`、`Trackable`、`Confirmable`、`Lockable`，以及下面這行都註解掉沒使用它們
 
 `db/migrate/20160906083955_devise_create_users.rb`
-```
+```rb
   # add_index :users, :reset_password_token, unique: true
 ```
 
@@ -31,7 +33,7 @@ rails g migration init_shop
 ```
 
 add to `migrate/XXXXXX_init_shop.rb`
-```
+```rb
 class InitShop < ActiveRecord::Migration
   def change
     create_table :cates do |t|
@@ -94,7 +96,7 @@ rails g migration add_item_cover
 然後把`XXXXXXX_add_item_cover.rb`修改成[paperclip github](https://github.com/thoughtbot/paperclip)，**Migration** 的寫法
 
 `db/migrate/20160906094234_add_item_cover.rb`
-```
+```rb
 class AddItemCover < ActiveRecord::Migration
   def up
     add_attachment :items, :cover

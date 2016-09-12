@@ -76,7 +76,7 @@ gem 'paperclip'
 完整的code
 
 `config/routes.rb`
-```
+```rb
 Rails.application.routes.draw do
 
   resources :statics, :only => [:index]

@@ -28,7 +28,7 @@ statics GET    /statics(.:format)                           statics#index
 create `app/controllers/statics_controller.rb`
 
 完整code
-```
+```rb
 class StaticsController < ApplicationController
   def index
     @items = Item.paginate(:page => params[:page])
@@ -37,21 +37,21 @@ end
 ```
 
 一開始我們先
-```
+```rb
 class StaticsController < ApplicationController
 
 end
 ```
 
 然後創建index action，傳統我們是寫
-```
+```rb
 def index
   @items = Item.all
 end
 ```
 
 但是由於我們的Index頁面會有很多分頁，所以我們這時就要用到will_paginate這個gem，我們可以去他的[GitHub](https://github.com/mislav/will_paginate)，改成**Basic will_paginate use**那樣的寫法
-```
+```rb
 def index
   @items = Item.paginate(:page => params[:page])
 end
@@ -63,7 +63,7 @@ end
 create `app/controllers/items_controller.rb`
 
 完整code
-```
+```rb
 class ItemsController < ApplicationController
   def index
     @items = @paginate = Item.paginate(:page => params[:page])
@@ -76,21 +76,21 @@ end
 ```
 
 在此要講解一下index action，原本的index action跟`statics_controller.rb`一樣
-```
+```rb
 def index
   @items = Item.paginate(:page => params[:page])
 end
 ```
 
 由於下一步，我們要顯示Item的index view，為了要讓前端頁面更好寫，**只要有用分頁的地方，我前面都再加一個`@paginate`**，變成
-```
+```rb
 def index
   @items = @paginate = Item.paginate(:page => params[:page])
 end
 ```
 
 同理`statics_controller.rb`也改成
-```
+```rb
 class StaticsController < ApplicationController
   def index
     @items = @paginate = Item.paginate(:page => params[:page])
@@ -121,7 +121,7 @@ end
 接著我們就去改`application.html.erb`
 
 fix `views/layouts/application.html.erb`
-```
+```html
 ...
 
 <body>
@@ -146,7 +146,7 @@ fix `views/layouts/application.html.erb`
 fix `views/layouts/application.html.erb`
 
 完整code
-```
+```html
 <body>
 
 <% if current_user %>
@@ -211,7 +211,7 @@ destroy_manager_session DELETE /managers/sign_out(.:format)                 devi
 ### 開始來打首頁的內容
 
 create `app/views/statics/index.html.erb`，很簡單打個
-```
+```html
 <h1>我是首頁</h1>
 ```
 然後重整`localhost:3000`測試登入登出畫面。
