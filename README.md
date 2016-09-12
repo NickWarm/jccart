@@ -34,7 +34,7 @@ GitHub：[NickWarm](https://github.com/NickWarm)
 git clone git@github.com:NickWarm/jccart.git
 ```
 
-去`config/database.yml`修改密碼，改成你自己的MySQL密碼，若是沒用過MySQL，可以參考我寫的[]()這篇文章
+去`config/database.yml`修改密碼，改成你自己的MySQL密碼
 
 
 ### 問題與討論
